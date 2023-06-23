@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <title>Document</title>
+</head>
+<body>
+  
+    <div class="container">
+        <nav class="navbar navbar-expand-lg bg-light">
+            <div class="container-fluid">
+            <a class="navbar-brand" href="#">Navbar</a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container input-group mb-2">
+      <input class="form-control" id="search-input">
+      <button class="input-group-append btn btn-danger"
+              id="search">
+              검색
+      </button>
+    </div>
+
+    <ul class="list-group">
+      <% for (var i = 0; i < POSTS.length; i++){ %>
+      <li class="list-group-item" id="detail" data-id="<%= POSTS[i]._id %>">
+        <h4> 할일 제목 : <%= POSTS[i].title %> </h4>
+        <p> id : <%= POSTS[i]._id %> / 할일 마감날짜 : <%= POSTS[i].date %> </p>
+        <button class="delete" data-id="<%= POSTS[i]._id %>">삭제</button>
+        <button class="edit" data-id="<%= POSTS[i]._id %>" id="edit">수정</button>
+      </li>
+      <% } %>
+    </ul>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <script>
+
+      $('#search').click(() => {
+        let inputData = $('#search-input').val();
+        window.location.replace('/search?value=' + inputData); 
+      }); 
+
+      $('#edit').click((e) => {
+        let postID = e.target.dataset.id;
+        console.log(postID)
+        window.location.replace('/edit/' + postID); 
+      }); 
+
+      $('#detail').click((e) => {
+        let postID = e.target.dataset.id;
+        console.log(postID)
+        window.location.replace('/detail/' + postID); 
+      }); 
+
+      $('.delete').click((e) => {
+        if(confirm('삭제 ㄱ?') === true) {
+          let postID = e.target.dataset.id;
+          $.ajax({
+          method: 'DELETE',
+          url: '/delete',
+          data: {_id: postID}
+          }).done((result) => {
+            console.log('삭제 완료');
+            $(this).parent('li').fadeOut();
+          }).fail((xhr, textStatus, errorThrown) => {
+            console.log(xhr, textStatus, errorThrown);
+          });
+        } else {
+          return false;
+        }
+        window.location.reload('/list'); 
+      });
+    </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
