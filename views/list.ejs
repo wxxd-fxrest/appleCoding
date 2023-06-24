@@ -28,9 +28,10 @@
 
     <ul class="list-group">
       <% for (var i = 0; i < POSTS.length; i++){ %>
-      <li class="list-group-item" id="detail" data-id="<%= POSTS[i]._id %>">
+      <li class="list-group-item">
         <h4> 할일 제목 : <%= POSTS[i].title %> </h4>
         <p> id : <%= POSTS[i]._id %> / 할일 마감날짜 : <%= POSTS[i].date %> </p>
+        <button class="detail" data-id="<%= POSTS[i]._id %>" id="detail"> 상세 보기 </button>
         <button class="delete" data-id="<%= POSTS[i]._id %>">삭제</button>
         <button class="edit" data-id="<%= POSTS[i]._id %>" id="edit">수정</button>
       </li>

@@ -154,14 +154,6 @@ app.get('/mypage', userLogin, (request, answer) => {
     console.log(request.user)
 });
 
-function userLogin (request, answer, next) {
-    if(request.user) {
-        next();
-    } else {
-        answer.send('미로그인');
-    }
-}; 
-
 app.post('/add', (request, answer) => {
             
     db.collection('counter').findOne({name: '게시물 갯수'}, 
@@ -188,3 +180,38 @@ app.post('/add', (request, answer) => {
     }); 
 }); 
 
+
+app.use('/shop', userLogin, require('./routes/shop'));
+// app.use == 미들웨어 사용 
+
+function userLogin (request, answer, next) {
+    if(request.user) {
+        next();
+    } else {
+        answer.send('미로그인');
+    }
+}; 
+
+let multer = require('multer');
+let storage = multer.diskStorage({
+    destination : function(req, file, cb) {
+        cb(null, './public/image');
+    },
+    filename : function(req, file, cb) {
+        cb(null, file.originalname);
+    },
+});
+
+let upload = multer({storage : storage});
+
+app.get('/upload', (request, answer) => {
+    answer.render('upload.ejs');
+});
+
+app.post('/upload', upload.single('profile'), (request, answer) => {
+    answer.send('upload');
+});
+
+app.get('/image/:imageName', (request, answer) => {
+    answer.sendFile( __dirname + '/public/image/' + request.params.imageName ); 
+}); 
